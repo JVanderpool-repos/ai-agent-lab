@@ -4,7 +4,7 @@
 - **Core Language:** Python 3.11+
 - **Orchestration:** LangChain (LCEL - LangChain Expression Language)
 - **Model Provider:** OpenAI (via `langchain-openai`)
-- **Primary Docs:** [LangChain OpenAI Integrations](https://docs.langchain.com/oss/python/integrations/chat/openai)
+- **Primary Docs:** [LangChain OpenAI Integrations]()https://docs.langchain.com/oss/python/integrations/chat/openai
 
 ## 2. Coding Standards
 - **Style:** Strictly follow PEP 8. Use 4 spaces for indentation.
