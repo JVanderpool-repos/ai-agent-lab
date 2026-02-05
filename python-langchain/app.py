@@ -2,6 +2,7 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_core.tools import Tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from datetime import datetime
 import os
 
@@ -35,6 +36,18 @@ def get_current_time(_: str) -> str:
         str: The current date and time in the format 'YYYY-MM-DD HH:MM:SS'.
     """
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def reverse_string(text: str) -> str:
+    """
+    Reverses a string.
+
+    Args:
+        text (str): The string to reverse.
+
+    Returns:
+        str: The reversed string.
+    """
+    return text[::-1]
 
 def main():
     # Load the GITHUB_TOKEN from environment variables
@@ -72,38 +85,74 @@ def main():
             name="get_current_time",
             func=get_current_time,
             description="Use this tool to get the current date and time in the format 'YYYY-MM-DD HH:MM:SS'."
+        ),
+        Tool(
+            name="reverse_string",
+            func=reverse_string,
+            description="Reverses a string. Input should be a single string."
         )
     ]
 
-    # Updated agent creation to use bind_tools for better integration
-    agent_executor = chat.bind_tools(tools)
+    # Create a prompt template with system message for the agent
+    system_message = "You are a professional and succinct AI assistant. Provide clear, concise responses and use available tools when necessary to answer user queries accurately."
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_message),
+        MessagesPlaceholder(variable_name="messages")
+    ])
+    
+    # Create agent with prompt and tools
+    agent_executor = prompt | chat.bind_tools(tools)
 
-    # Updated test query to use the documented invocation structure
-    test_query = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "What time is it right now?"}
+    # Test queries list
+    test_queries = [
+        "What time is it right now?",
+        "What is 25 * 4 + 10?",
+        "Reverse the string 'Hello World'"
     ]
 
-    # Refactor to ensure tool outputs are included in the agent's response
-    try:
-        result = agent_executor.invoke(test_query)
+    # Run example queries
+    print("\nRunning example queries:")
+    print("─" * 50)
+    
+    for i, query in enumerate(test_queries, 1):
+        print(f"\n📝 Query {i}: {query}")
+        print("─" * 50)
+        
+        try:
+            # Invoke the agent with the query
+            result = agent_executor.invoke({"messages": [{"role": "user", "content": query}]})
 
-        # Check if the result contains tool calls and handle them
-        if result.tool_calls:
-            for tool_call in result.tool_calls:
-                if tool_call['name'] == 'get_current_time':
-                    tool_output = get_current_time("")
-                    print("Agent Output (with tool):", tool_output)
-                else:
-                    print("Unhandled Tool Call:", tool_call)
-        else:
-            # Default response handling
-            if hasattr(result, "content"):
-                print("Agent Output:", result.content)
+            # Check if the result contains tool calls and handle them
+            if result.tool_calls:
+                for tool_call in result.tool_calls:
+                    tool_name = tool_call['name']
+                    tool_args = tool_call.get('args', {})
+                    
+                    if tool_name == 'Calculator':
+                        expression = tool_args.get('__arg1', '')
+                        tool_output = calculator(expression)
+                        print("✅ Agent Output (Calculator):", tool_output)
+                    elif tool_name == 'get_current_time':
+                        tool_output = get_current_time("")
+                        print("✅ Agent Output (Time):", tool_output)
+                    elif tool_name == 'reverse_string':
+                        text = tool_args.get('__arg1', '')
+                        tool_output = reverse_string(text)
+                        print("✅ Agent Output (Reverse):", tool_output)
+                    else:
+                        print("✅ Unhandled Tool Call:", tool_call)
             else:
-                print("Agent Output:", "Unexpected response format:", result)
-    except Exception as e:
-        print("❌ Error while executing the agent:", e)
+                # Default response handling
+                if hasattr(result, "content"):
+                    print("✅ Agent Output:", result.content)
+                else:
+                    print("✅ Agent Output:", result)
+        except Exception as e:
+            print(f"❌ Error while executing the agent: {e}")
+    
+    print("\n" + "─" * 50)
+    print("🎉 Agent demo complete!")
 
     # Test query
     # query = "What is 25 * 4 + 10?"
@@ -113,7 +162,7 @@ def main():
     # print("AI Response:", response.content)
 
     # Debugging: Print the output of the get_current_time tool
-    print("DEBUG: get_current_time output:", get_current_time(""))
+    # print("DEBUG: get_current_time output:", get_current_time(""))
 
 if __name__ == "__main__":
     # Load environment variables from a .env file
