@@ -761,4 +761,4 @@ Perfect! The test ran successfully with Query 5 updated to a simple request. The
 2. Then called `get_weather()` with that date
 3. Returned a complete answer combining both pieces of information
 
-The multi-step orchestration works automatically through the agentic loop (max 10 iterations) without needing explicit instructions in the query.
+The multi-step orchestration works automatically through the agentic loop (max 10 iterations) without needing explicit instructions in the query. 

@@ -218,4 +218,4 @@ def main():
 if __name__ == "__main__":
     # Load environment variables from a .env file
     load_dotenv()
-    main()
+    main() 
