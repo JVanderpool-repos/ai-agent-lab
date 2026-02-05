@@ -89,9 +89,6 @@ def main():
         print("🔗 For more information, visit: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token")
         return
 
-    # Debugging: Check if environment variables are loaded
-    print("DEBUG: GITHUB_TOKEN:", os.getenv("GITHUB_TOKEN"))
-
     print("✅ GITHUB_TOKEN loaded successfully!")
 
     # Create a ChatOpenAI instance
@@ -101,8 +98,6 @@ def main():
         api_key=lambda: os.getenv("GITHUB_TOKEN") or "",  # Provide a default empty string if the environment variable is not set
         base_url="https://models.github.ai/inference"
     )
-
-    ###print("🤖 ChatOpenAI instance created successfully!")
 
     # Create a tools list
     tools = [
@@ -219,16 +214,6 @@ def main():
     
     print("\n" + "─" * 50)
     print("🎉 Agent demo complete!")
-
-    # Test query
-    # query = "What is 25 * 4 + 10?"
-    # response = chat.invoke(query)
-
-    # Print the response content
-    # print("AI Response:", response.content)
-
-    # Debugging: Print the output of the get_current_time tool
-    # print("DEBUG: get_current_time output:", get_current_time(""))
 
 if __name__ == "__main__":
     # Load environment variables from a .env file
