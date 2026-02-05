@@ -2,11 +2,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Run App",
+            "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/app.py",
-            "console": "integratedTerminal"
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/python-langchain"
+            }
+        },
+        {
+            "name": "Python: app.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/python-langchain/app.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/python-langchain"
+            }
+        },
+        {
+            "name": "Python: Debug with Breakpoints",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/python-langchain/app.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/python-langchain"
+            },
+            "stopOnEntry": false
         }
     ]
 }

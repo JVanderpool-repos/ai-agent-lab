@@ -4,16 +4,63 @@
         {
             "label": "Run Python App",
             "type": "shell",
-            "command": "python",
-            "args": ["app.py"],
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "${workspaceFolder}/python-langchain/app.py"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "presentation": {
-                "reveal": "always"
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true
             },
-            "problemMatcher": []
+            "problemMatcher": [
+                "$python"
+            ]
+        },
+        {
+            "label": "Install Dependencies",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "pip",
+                "install",
+                "-r",
+                "${workspaceFolder}/python-langchain/requirements.txt"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Run Linting (pylint)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "pylint",
+                "${workspaceFolder}/python-langchain/app.py"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                "$pylint"
+            ]
         }
     ]
 }
